@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 18:01:53 by cnails            #+#    #+#             */
-/*   Updated: 2020/06/28 14:35:39 by cnails           ###   ########.fr       */
+/*   Updated: 2020/09/30 14:01:52 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+int					ft_abs(int nbr);
 void				*ft_memset(void *s, int c, size_t n);
 void				ft_bzero(void *b, size_t len);
 void				*ft_memcpy(void *dest, const void *src, size_t n);
@@ -36,6 +37,7 @@ void				*ft_memchr(const void *s, int c, size_t n);
 int					ft_memcmp(const void *s1, const void *s2, size_t n);
 size_t				ft_strlen(const char *s);
 char				*ft_strdup(const char *src);
+void				ft_free_array(char **array);
 char				*ft_strcpy(char *dest, const char *scr);
 char				*ft_strncpy(char *dest, const char *scr, unsigned int n);
 char				*ft_strcat(char *dest, const char *src);

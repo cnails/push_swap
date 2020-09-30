@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:04:16 by cnails            #+#    #+#             */
-/*   Updated: 2020/09/18 21:30:15 by cnails           ###   ########.fr       */
+/*   Updated: 2020/09/30 23:29:25 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ typedef struct		s_main
 {
 	t_stack 	*a;
 	t_stack 	*b;
+	t_stack 	*max_sort;
+	int			cmd_count;
 	bool		flag_v;
 	bool		flag_c;
 	int			len_a;
