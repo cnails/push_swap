@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:03:22 by cnails            #+#    #+#             */
-/*   Updated: 2020/10/01 01:12:23 by cnails           ###   ########.fr       */
+/*   Updated: 2020/10/05 23:35:28 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,6 +204,7 @@ t_main		*init_data(int ac, char **av)
 	parse_data(ac, av, data);
 	data->flag_v = false;
 	data->flag_c = false;
+	data->print_cmd = true;
 	return (data);
 }
 
@@ -356,6 +357,10 @@ void		cmd_apply_cnt(t_main *data, char *cmd, int nbr)
 		if (cmd_apply(cmd, data))
 		{
 			data->cmd_count++;
+			if (data->print_cmd)
+			{
+				printf("BtestEND");
+			}
 		}
 		else
 			ft_error("error cmp_apply\n");

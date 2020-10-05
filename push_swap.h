@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:04:16 by cnails            #+#    #+#             */
-/*   Updated: 2020/09/30 23:29:25 by cnails           ###   ########.fr       */
+/*   Updated: 2020/10/05 23:33:14 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 # include "libft/libft.h"
 # include <stdbool.h>
 # include <limits.h>
+
+# define B "\e[34m";
+# define END "\e[0m";
 
 typedef struct		s_stack
 {
@@ -31,6 +34,7 @@ typedef struct		s_main
 	t_stack 	*b;
 	t_stack 	*max_sort;
 	int			cmd_count;
+	bool		print_cmd;
 	bool		flag_v;
 	bool		flag_c;
 	int			len_a;
