@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:04:16 by cnails            #+#    #+#             */
-/*   Updated: 2020/10/05 23:33:14 by cnails           ###   ########.fr       */
+/*   Updated: 2020/10/06 20:28:29 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include <stdbool.h>
 # include <limits.h>
 
-# define B "\e[34m";
-# define END "\e[0m";
+# define B "\e[34m"
+# define END "\e[0m"
 
 typedef struct		s_stack
 {
@@ -35,13 +35,19 @@ typedef struct		s_main
 	t_stack 	*max_sort;
 	int			cmd_count;
 	bool		print_cmd;
+	int			tmp_ind;
 	bool		flag_v;
 	bool		flag_c;
 	int			len_a;
 	int			len_b;
+	int			opt_b;
+	int			opt_a;
+	int			opt_ind;
 	int			tmp_a;
 	int			tmp_b;
 	int			tmp;
 }					t_main;
+
+t_stack		*stack_push_int(t_stack **stack, int nbr);
 
 #endif

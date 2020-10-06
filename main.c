@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:03:22 by cnails            #+#    #+#             */
-/*   Updated: 2020/10/05 23:35:28 by cnails           ###   ########.fr       */
+/*   Updated: 2020/10/06 20:29:18 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,21 @@ void		print_stack(t_stack *stack)
 		printf("%d\n", head->val);
 		head = head->next;
 	}
+}
+
+size_t		len_stack(t_stack *stack)
+{
+	t_stack		*head;
+	size_t		i;
+
+	i = 0;
+	head = stack;
+	while (head)
+	{
+		i++;
+		head = head->next;
+	}
+	return (i);
 }
 
 t_stack		*max_sort(t_stack *stack)
@@ -72,21 +87,6 @@ void		indexing(t_stack *stack)
 		i++;
 		head = head->next;
 	}
-}
-
-size_t		len_stack(t_stack *stack)
-{
-	t_stack		*head;
-	size_t		i;
-
-	i = 0;
-	head = stack;
-	while (head)
-	{
-		i++;
-		head = head->next;
-	}
-	return (i);
 }
 
 int			iter_to_up(int stack_len, int node_ind)
@@ -187,7 +187,7 @@ static void	parse_data(int ac, char **av, t_main *data)
 			if (!is_valid_int(nbr, av[i]) || !is_not_dupl(data->a, nbr) ||
 				!(stack_push_int(&data->a, nbr)))
 				ft_error("Not a valid arguments");
-			push_back_nbr(&data->a, nbr);
+			// push_back_nbr(&data->a, nbr);
 		}
 		i++;
 	}
@@ -223,7 +223,7 @@ t_stack		*stack_pop(t_stack **stack)
 	return (tmp);
 }
 
-t_stack		*stack_push(t_stack **stack, t_stack *new)
+void		stack_push(t_stack **stack, t_stack *new)
 {
 	t_stack *last;
 
@@ -328,24 +328,27 @@ int			cmd_apply(char *cmd, t_main *data)
 
 	len = ft_strlen(cmd);
 	res = 0;
-	if (len == 2 && cmd[0] == 's' && (cmd[1] == 's' || cmd[1] == 'a'))
-		res = cmd_apply_s(&data->a);
-	if (len == 2 && cmd[0] == 's' && (cmd[1] == 's' || cmd[1] == 'b'))
-		res = cmd_apply_s(&data->b);
-	if (len == 2 && cmd[0] == 'p' && cmd[1] == 'a')
-		res = cmd_apply_p(&data->b, &data->a);
-	if (len == 2 && cmd[0] == 'p' && cmd[1] == 'b')
-		res = cmd_apply_p(&data->a, &data->b);
-	if (len == 2 && cmd[0] == 'r' && (cmd[1] == 'r' || cmd[1] == 'a'))
-		res = cmd_apply_r(&data->a);
-	if (len == 2 && cmd[0] == 'r' && (cmd[1] == 'r' || cmd[1] == 'b'))
-		res = cmd_apply_r(&data->b);
-	if (len == 3 && cmd[0] == 'r' && cmd[1] == 'r' &&
-		(cmd[2] == 'r' || cmd[2] == 'a'))
-		res = cmd_apply_rr(&data->a);
-	if (len == 3 && cmd[0] == 'r' && cmd[1] == 'r' &&
-		(cmd[2] == 'r' || cmd[2] == 'b'))
-		res = cmd_apply_rr(&data->b);
+	if (len == 2)
+	{
+		if (cmd[0] == 's' && (cmd[1] == 's' || cmd[1] == 'a'))
+			res = cmd_apply_s(&data->a);
+		if (cmd[0] == 's' && (cmd[1] == 's' || cmd[1] == 'b'))
+			res = cmd_apply_s(&data->b);
+		if (cmd[0] == 'r' && (cmd[1] == 'r' || cmd[1] == 'a'))
+			res = cmd_apply_r(&data->a);
+		if (cmd[0] == 'r' && (cmd[1] == 'r' || cmd[1] == 'b'))
+			res = cmd_apply_r(&data->b);
+		if (cmd[0] == 'p' && (cmd[1] == 'a' || cmd[1] == 'b'))
+			res = cmd[1] == 'a' ? cmd_apply_p(&data->b, &data->a)\
+			: cmd_apply_p(&data->a, &data->b);
+	}
+	else if (len == 3 && cmd[0] == 'r' && cmd[1] == 'r')
+	{
+		if (cmd[2] == 'r' || cmd[2] == 'a')
+			res = cmd_apply_rr(&data->a);
+		if (cmd[2] == 'r' || cmd[2] == 'b')
+			res = cmd_apply_rr(&data->b);
+	}
 	return (res == 0 ? 0 : 1);
 }
 
@@ -359,11 +362,11 @@ void		cmd_apply_cnt(t_main *data, char *cmd, int nbr)
 			data->cmd_count++;
 			if (data->print_cmd)
 			{
-				printf("BtestEND");
+				printf(B"%s\n"END, cmd);
 			}
 		}
 		else
-			ft_error("error cmp_apply\n");
+			ft_error("error cmd_apply\n");
 		nbr--;
 	}
 }
@@ -383,12 +386,122 @@ void		stack_a_init(t_main *data)
 	cmd_apply_cnt(data, nbr > 0 ? "ra" : "rra", nbr);
 }
 
+void	st_a_to_b(t_main *data)
+{
+	t_stack *stack;
+
+	stack = data->a;
+	while (stack && stack->ind != data->max_sort->ind)
+	{
+		stack = stack->next;
+		cmd_apply_cnt("pb", 1, data);
+	}
+}
+
+int		index_node(stack *stack, int nbr)
+{
+	t_stack *tmp;
+	int		min;
+
+	min = 0;
+	tmp = NULL;
+	while (stack)
+	{
+		if ((min == 0) || (min < 0 && stack->val - nbr < 0\
+		&& stack->val - nbr > min) || (min > 0 && stack->val - nbr < min))
+		{
+			min = stack->val - nbr;
+			tmp = stack;
+		}
+		stack = stack->next;
+	}
+	if (tmp == stack && min < 0)
+		return (-1);
+	return (min < 0 ? tmp->ind + 1 : tmp->ind);
+}
+
+void	tmp_to_opt(t_main *data)
+{
+	data->opt_ind = data->tmp_ind;
+	data->opt_b = data->tmp_b;
+	data->opt_a = data->tmp_a;
+}
+
+int		b_to_a_count(int a, int b, int tmp)
+{
+	if (a > 0 && b > 0 && tmp != -1)
+		return (a > b ? a : b);
+	if (a < 0 && b < 0 && tmp != -1)
+		return (ft_abs(a) > ft_abs(b) ? ft_abs(a) : ft_abs(b));
+	else
+		return (ft_abs(a) + ft_abs(b));
+	
+}
+
+int		count_cmds_tmp(t_main *data, t_stack *stack)
+{
+	data->tmp_ind = index_node(data->a, stack->val);
+	data->tmp_b = iter_to_up(data->len_b, stack->ind);
+	data->tmp_a = iter_to_up(data->len_a, data->tmp_ind);
+	return (b_to_a_count(data->tmp_a, data->tmp_b, data->tmp_ind));
+}
+
+void	node_b_to_a(t_main *data)
+{
+	data->tmp_b = ft_abs(data->opt_b);
+}
+
+void	st_b_to_a(t_main *data)
+{
+	t_stack *stack;
+	int		min;
+	int		cs;
+
+	while (data->b)
+	{
+		stack = data->b;
+		indexing(data->a);
+		indexing(data->b);
+		data->len_a = len_stack(data->a);
+		data->len_b = len_stack(data->b);
+		min = count_cmds_tmp(data, stack);
+		tmp_to_opt(data);
+		while (stack)
+		{
+			cs = count_cmds_tmp(data, stack);
+			if (cs < min)
+			{
+				min = cs;
+				tmp_to_opt(data);
+			}
+			stack = stack->next;
+		}
+		node_b_to_a(data);
+	}
+}
+
+void	ft_sort(t_main *data)
+{
+	st_a_to_b(data);
+	st_b_to_a(data);
+	st_a_min_to_top(data);
+}
+
 int		main(int ac, char **av)
 {
 	t_main	*data;
 
-	data = init_data(ac, av);
-	data->len_a = len_stack(data->a);
-	stack_a_init(data);
+	if (ac >= 2)
+	{
+		data = init_data(ac, av);
+		data->len_a = len_stack(data->a);
+		printf("a:\n");
+		print_stack(data->a);
+		stack_a_init(data);
+		printf("a:\n");
+		print_stack(data->a);
+		printf("b:\n");
+		print_stack(data->b);
+	}
 	return (0);
 }
