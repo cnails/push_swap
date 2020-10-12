@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:03:22 by cnails            #+#    #+#             */
-/*   Updated: 2020/10/06 20:29:18 by cnails           ###   ########.fr       */
+/*   Updated: 2020/10/12 16:53:29 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -398,7 +398,7 @@ void	st_a_to_b(t_main *data)
 	}
 }
 
-int		index_node(stack *stack, int nbr)
+int		index_node(t_stack *stack, int nbr)
 {
 	t_stack *tmp;
 	int		min;
@@ -449,6 +449,14 @@ int		count_cmds_tmp(t_main *data, t_stack *stack)
 void	node_b_to_a(t_main *data)
 {
 	data->tmp_b = ft_abs(data->opt_b);
+	data->tmp_a = ft_abs(data->opt_a);
+	while (((data->opt_b > 0 && data->opt_a > 0) || data->opt_b < 0 && data->opt_a < 0)) && data->tmp_b && data->tmp_a && data->opt_ind != -1)
+	{
+		cmd_apply_cnt(data->opt_b > 0 ? "rr" : "rrr", 1, data);
+		data->tmp_b--;
+		data->tmp_a--;
+	}
+	// NOT ALL
 }
 
 void	st_b_to_a(t_main *data)
