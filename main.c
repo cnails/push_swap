@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:03:22 by cnails            #+#    #+#             */
-/*   Updated: 2020/10/12 16:53:29 by cnails           ###   ########.fr       */
+/*   Updated: 2020/11/09 12:13:18 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,7 @@ t_main		*init_data(int ac, char **av)
 	return (data);
 }
 
-t_stack		*stack_pop(t_stack **stack)
+t_stack		*stack_unshift(t_stack **stack)
 {
 	t_stack *tmp;
 
@@ -223,7 +223,7 @@ t_stack		*stack_pop(t_stack **stack)
 	return (tmp);
 }
 
-void		stack_push(t_stack **stack, t_stack *new)
+void		stack_shift(t_stack **stack, t_stack *new)
 {
 	t_stack *last;
 
@@ -236,16 +236,7 @@ void		stack_push(t_stack **stack, t_stack *new)
 	last->next = new;
 }
 
-t_stack		*stack_push_int(t_stack **stack, int nbr)
-{
-	t_stack *new;
-
-	new = create_new(nbr);
-	stack_push(stack, new);
-	return (*stack);
-}
-
-t_stack		*stack_shift(t_stack **stack, t_stack *new)
+void		stack_push(t_stack **stack, t_stack *new)
 {
 	if (!(*stack))
 		*stack = new;
@@ -256,7 +247,16 @@ t_stack		*stack_shift(t_stack **stack, t_stack *new)
 	}
 }
 
-t_stack		*stack_unshift(t_stack **stack)
+t_stack		*stack_push_int(t_stack **stack, int nbr)
+{
+	t_stack *new;
+
+	new = create_new(nbr);
+	stack_push(stack, new);
+	return (*stack);
+}
+
+t_stack		*stack_pop(t_stack **stack)
 {
 	t_stack *pre_last;
 	t_stack	*tmp;
@@ -295,7 +295,7 @@ int			cmd_apply_r(t_stack **stack)
 {
 	if (*stack && (*stack)->next)
 	{
-		stack_shift(stack, stack_unshift(stack));
+		stack_shift(stack, stack_unshift(stack)); // push_back (pop_front)
 		return (1);
 	}
 	return (-1);
@@ -305,7 +305,7 @@ int			cmd_apply_rr(t_stack **stack)
 {
 	if (*stack && (*stack)->next)
 	{
-		stack_push(stack, stack_pop(stack));
+		stack_push(stack, stack_pop(stack)); // push_front (pop_back)
 		return (1);
 	}
 	return (-1);
@@ -394,7 +394,7 @@ void	st_a_to_b(t_main *data)
 	while (stack && stack->ind != data->max_sort->ind)
 	{
 		stack = stack->next;
-		cmd_apply_cnt("pb", 1, data);
+		cmd_apply_cnt(data, "pb", 1);
 	}
 }
 
@@ -450,13 +450,16 @@ void	node_b_to_a(t_main *data)
 {
 	data->tmp_b = ft_abs(data->opt_b);
 	data->tmp_a = ft_abs(data->opt_a);
-	while (((data->opt_b > 0 && data->opt_a > 0) || data->opt_b < 0 && data->opt_a < 0)) && data->tmp_b && data->tmp_a && data->opt_ind != -1)
+	while (((data->opt_b > 0 && data->opt_a > 0) || (data->opt_b < 0 && data->opt_a < 0)) && data->tmp_b && data->tmp_a && data->opt_ind != -1)
 	{
-		cmd_apply_cnt(data->opt_b > 0 ? "rr" : "rrr", 1, data);
+		cmd_apply_cnt(data, data->opt_b > 0 ? "rr" : "rrr", 1);
 		data->tmp_b--;
 		data->tmp_a--;
 	}
-	// NOT ALL
+	cmd_apply_cnt(data, data->opt_b > 0 ? "rb" : "rrb", data->tmp_b);
+	if (data->opt_ind != -1)
+		cmd_apply_cnt(data, data->opt_a > 0 ? "ra" : "rra", data->tmp_a);
+	cmd_apply_cnt(data, "pa", 1);
 }
 
 void	st_b_to_a(t_main *data)
@@ -488,6 +491,25 @@ void	st_b_to_a(t_main *data)
 	}
 }
 
+void	st_a_min_to_top(t_main *data)
+{
+	t_stack		*tmp_a;
+	t_stack		*min_node;
+	int			cnt_to_up;
+
+	tmp_a = data->a;
+	min_node = tmp_a;
+	while (tmp_a)
+	{
+		min_node = tmp_a->val < min_node->val ? tmp_a : min_node;
+		tmp_a = tmp_a->next;
+	}
+	data->len_a = len_stack(data->a);
+	indexing(data->a);
+	cnt_to_up = iter_to_up(data->len_a, min_node->ind);
+	cmd_apply_cnt(data, cnt_to_up > 0 ? "ra" : "rra", cnt_to_up);
+}	
+
 void	ft_sort(t_main *data)
 {
 	st_a_to_b(data);
@@ -506,10 +528,9 @@ int		main(int ac, char **av)
 		printf("a:\n");
 		print_stack(data->a);
 		stack_a_init(data);
+		ft_sort(data);
 		printf("a:\n");
 		print_stack(data->a);
-		printf("b:\n");
-		print_stack(data->b);
 	}
 	return (0);
 }
