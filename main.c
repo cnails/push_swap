@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:03:22 by cnails            #+#    #+#             */
-/*   Updated: 2020/11/09 12:13:18 by cnails           ###   ########.fr       */
+/*   Updated: 2020/11/10 20:32:07 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,32 @@ bool		is_valid_int(int nbr, char *str)
 		free(tmp);
 		return (false);
 	}
+	free(tmp);
 	return (true);
+}
+
+void		stack_push_back(t_stack **stack, t_stack *new)
+{
+	t_stack *last;
+
+	if (!(*stack))
+	{
+		*stack = new;
+	}
+	else
+	{
+		last = get_last(*stack);
+		last->next = new;
+	}
+}
+
+t_stack		*stack_push_back_int(t_stack **stack, int nbr)
+{
+	t_stack *new;
+
+	new = create_new(nbr);
+	stack_push_back(stack, new);
+	return (*stack);
 }
 
 bool		is_not_dupl(t_stack *stack, int nbr)
@@ -185,13 +210,11 @@ static void	parse_data(int ac, char **av, t_main *data)
 		{
 			nbr = ft_atoi(av[i]);
 			if (!is_valid_int(nbr, av[i]) || !is_not_dupl(data->a, nbr) ||
-				!(stack_push_int(&data->a, nbr)))
+				!(stack_push_back_int(&data->a, nbr)))
 				ft_error("Not a valid arguments");
-			// push_back_nbr(&data->a, nbr);
 		}
 		i++;
 	}
-	print_stack(data->a);
 	ft_free_array(ac == 2 ? av : NULL);
 }
 
@@ -200,8 +223,12 @@ t_main		*init_data(int ac, char **av)
 	t_main *data;
 
 	if (!(data = (t_main *)ft_memalloc(sizeof(t_main))))
-		ft_error("malloc is failed");
+		ft_error("Failed malloc");
 	parse_data(ac, av, data);
+	if (!data->a)
+	{
+		ft_error("Invalid arguments");
+	}
 	data->flag_v = false;
 	data->flag_c = false;
 	data->print_cmd = true;
@@ -247,15 +274,6 @@ void		stack_push(t_stack **stack, t_stack *new)
 	}
 }
 
-t_stack		*stack_push_int(t_stack **stack, int nbr)
-{
-	t_stack *new;
-
-	new = create_new(nbr);
-	stack_push(stack, new);
-	return (*stack);
-}
-
 t_stack		*stack_pop(t_stack **stack)
 {
 	t_stack *pre_last;
@@ -295,7 +313,7 @@ int			cmd_apply_r(t_stack **stack)
 {
 	if (*stack && (*stack)->next)
 	{
-		stack_shift(stack, stack_unshift(stack)); // push_back (pop_front)
+		stack_shift(stack, stack_unshift(stack));
 		return (1);
 	}
 	return (-1);
@@ -305,7 +323,7 @@ int			cmd_apply_rr(t_stack **stack)
 {
 	if (*stack && (*stack)->next)
 	{
-		stack_push(stack, stack_pop(stack)); // push_front (pop_back)
+		stack_push(stack, stack_pop(stack));
 		return (1);
 	}
 	return (-1);
@@ -362,7 +380,7 @@ void		cmd_apply_cnt(t_main *data, char *cmd, int nbr)
 			data->cmd_count++;
 			if (data->print_cmd)
 			{
-				printf(B"%s\n"END, cmd);
+				printf("%s\n", cmd);
 			}
 		}
 		else
@@ -386,7 +404,7 @@ void		stack_a_init(t_main *data)
 	cmd_apply_cnt(data, nbr > 0 ? "ra" : "rra", nbr);
 }
 
-void	st_a_to_b(t_main *data)
+void		st_a_to_b(t_main *data)
 {
 	t_stack *stack;
 
@@ -398,7 +416,7 @@ void	st_a_to_b(t_main *data)
 	}
 }
 
-int		index_node(t_stack *stack, int nbr)
+int			index_node(t_stack *stack, int nbr)
 {
 	t_stack *tmp;
 	int		min;
@@ -420,14 +438,14 @@ int		index_node(t_stack *stack, int nbr)
 	return (min < 0 ? tmp->ind + 1 : tmp->ind);
 }
 
-void	tmp_to_opt(t_main *data)
+void		tmp_to_opt(t_main *data)
 {
 	data->opt_ind = data->tmp_ind;
 	data->opt_b = data->tmp_b;
 	data->opt_a = data->tmp_a;
 }
 
-int		b_to_a_count(int a, int b, int tmp)
+int			b_to_a_count(int a, int b, int tmp)
 {
 	if (a > 0 && b > 0 && tmp != -1)
 		return (a > b ? a : b);
@@ -438,7 +456,7 @@ int		b_to_a_count(int a, int b, int tmp)
 	
 }
 
-int		count_cmds_tmp(t_main *data, t_stack *stack)
+int			count_cmds_tmp(t_main *data, t_stack *stack)
 {
 	data->tmp_ind = index_node(data->a, stack->val);
 	data->tmp_b = iter_to_up(data->len_b, stack->ind);
@@ -446,7 +464,7 @@ int		count_cmds_tmp(t_main *data, t_stack *stack)
 	return (b_to_a_count(data->tmp_a, data->tmp_b, data->tmp_ind));
 }
 
-void	node_b_to_a(t_main *data)
+void		node_b_to_a(t_main *data)
 {
 	data->tmp_b = ft_abs(data->opt_b);
 	data->tmp_a = ft_abs(data->opt_a);
@@ -462,7 +480,7 @@ void	node_b_to_a(t_main *data)
 	cmd_apply_cnt(data, "pa", 1);
 }
 
-void	st_b_to_a(t_main *data)
+void		st_b_to_a(t_main *data)
 {
 	t_stack *stack;
 	int		min;
@@ -491,7 +509,7 @@ void	st_b_to_a(t_main *data)
 	}
 }
 
-void	st_a_min_to_top(t_main *data)
+void		st_a_min_to_top(t_main *data)
 {
 	t_stack		*tmp_a;
 	t_stack		*min_node;
@@ -510,14 +528,14 @@ void	st_a_min_to_top(t_main *data)
 	cmd_apply_cnt(data, cnt_to_up > 0 ? "ra" : "rra", cnt_to_up);
 }	
 
-void	ft_sort(t_main *data)
+void		ft_sort(t_main *data)
 {
 	st_a_to_b(data);
 	st_b_to_a(data);
 	st_a_min_to_top(data);
 }
 
-int		main(int ac, char **av)
+int			main(int ac, char **av)
 {
 	t_main	*data;
 
@@ -525,12 +543,9 @@ int		main(int ac, char **av)
 	{
 		data = init_data(ac, av);
 		data->len_a = len_stack(data->a);
-		printf("a:\n");
-		print_stack(data->a);
 		stack_a_init(data);
 		ft_sort(data);
-		printf("a:\n");
-		print_stack(data->a);
+		free_data(&data);
 	}
 	return (0);
 }
