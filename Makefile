@@ -6,7 +6,7 @@
 #    By: cnails <cnails@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/13 11:41:07 by cnails            #+#    #+#              #
-#    Updated: 2020/11/13 11:57:44 by cnails           ###   ########.fr        #
+#    Updated: 2020/12/09 00:39:13 by cnails           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,9 +21,9 @@ INCLUDES_LIB = ./libft/includes/
 SRC_DIR = ./src/
 OBJ_DIR = ./obj/
 
-SRCS = main.c sort_utils.c
+SRCS = main.c sort_utils.c free_data.c
 
-SRCS_CHECKER = checker.c sort_utils.c
+SRCS_CHECKER = checker.c sort_utils.c free_data.c
 
 HEADER = $(addprefix $(INCLUDES), $(HEADER_NAME))
 
@@ -36,7 +36,7 @@ CC = gcc
 FLAGS = -Wall -Werror -Wextra
 C_LIB = -L ./libft -lft
 
-all: $(NAME)
+all: $(NAME) $(CHECKER)
 
 $(NAME): $(OBJ_DIR) $(OBJ) $(LIB) $(HEADER)
 	$(CC) $(C_LIB) $(addprefix -I, $(INCLUDES)) $(OBJ) $(FLAGS) -o $(NAME)

@@ -6,14 +6,14 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 21:04:16 by cnails            #+#    #+#             */
-/*   Updated: 2020/11/10 20:07:28 by cnails           ###   ########.fr       */
+/*   Updated: 2020/12/09 00:39:50 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
-# include "libft/libft.h"
+# include "../libft/libft.h"
 # include <stdbool.h>
 # include <limits.h>
 
