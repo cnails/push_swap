@@ -1,37 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   checker.c                                          :+:      :+:    :+:   */
+/*   cmd_apply_cnt.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/10 19:41:22 by cnails            #+#    #+#             */
-/*   Updated: 2020/12/09 01:08:16 by cnails           ###   ########.fr       */
+/*   Created: 2020/12/09 01:28:55 by cnails            #+#    #+#             */
+/*   Updated: 2020/12/09 01:29:24 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int main(int ac, char **av)
+void		cmd_apply_cnt(t_main *data, char *cmd, int nbr)
 {
-	t_main	*data;
-	char	*cmd;
-
-	cmd = NULL;
-	data = init_data(ac, av);
-	data->print_cmd = false;
-	if (!data->a)
-		ft_error("Invalid arguments");
-	while (get_next_line(0, &cmd) > 0)
+	nbr = ft_abs(nbr);
+	while (nbr)
 	{
-		cmd_apply_cnt(data, cmd, 1);
-		if (cmd)
-			free(cmd);
+		if (cmd_apply(cmd, data))
+		{
+			data->cmd_count++;
+			if (data->print_cmd)
+			{
+				printf("%s\n", cmd);
+			}
+		}
+		else
+			ft_error("error cmd_apply\n");
+		nbr--;
 	}
-	if (is_sorted(data))
-		printf("OK\n");
-	else
-		printf("KO\n");
-	free_data(&data);
-	return (1);
 }

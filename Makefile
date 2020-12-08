@@ -6,12 +6,13 @@
 #    By: cnails <cnails@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/13 11:41:07 by cnails            #+#    #+#              #
-#    Updated: 2020/12/09 00:39:13 by cnails           ###   ########.fr        #
+#    Updated: 2020/12/09 01:30:32 by cnails           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = push_swap
 CHECKER = checker
+MAKE_LIB = lib
 
 LIB = libft/libft.a
 HEADER_NAME = push_swap.h
@@ -21,9 +22,9 @@ INCLUDES_LIB = ./libft/includes/
 SRC_DIR = ./src/
 OBJ_DIR = ./obj/
 
-SRCS = main.c sort_utils.c free_data.c
+SRCS = main.c sort_utils.c free_data.c utils.c cmd_apply_cnt.c cmd_apply.c push_to_stack.c stack_utils.c
 
-SRCS_CHECKER = checker.c sort_utils.c free_data.c
+SRCS_CHECKER = checker.c sort_utils.c free_data.c utils.c cmd_apply_cnt.c cmd_apply.c push_to_stack.c stack_utils.c
 
 HEADER = $(addprefix $(INCLUDES), $(HEADER_NAME))
 
@@ -36,18 +37,18 @@ CC = gcc
 FLAGS = -Wall -Werror -Wextra
 C_LIB = -L ./libft -lft
 
-all: $(NAME) $(CHECKER)
+all: $(MAKE_LIB) $(NAME) $(CHECKER)
 
 $(NAME): $(OBJ_DIR) $(OBJ) $(LIB) $(HEADER)
-	$(CC) $(C_LIB) $(addprefix -I, $(INCLUDES)) $(OBJ) $(FLAGS) -o $(NAME)
+	$(CC) $(OBJ) $(C_LIB) $(addprefix -I, $(INCLUDES)) $(FLAGS) -o $(NAME)
 
 $(CHECKER): $(OBJ_DIR) $(OBJ_CHECKER) $(LIB) $(HEADER)
-	$(CC) $(C_LIB) $(addprefix -I, $(INCLUDES)) $(OBJ_CHECK) $(FLAGS) -o $(CHECKER)
+	$(CC) $(OBJ_CHECKER) $(C_LIB) $(addprefix -I, $(INCLUDES)) $(FLAGS) -o $(CHECKER)
 
 $(OBJ_DIR):
 	mkdir -p obj
 
-$(NAME_LIB):
+$(MAKE_LIB):
 	make -C libft/
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
